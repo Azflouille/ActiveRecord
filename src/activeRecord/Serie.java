@@ -2,6 +2,7 @@ package activeRecord;
 import java.sql.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Serie {
 
@@ -34,7 +35,7 @@ public class Serie {
         return series;
     }
 
-    public Serie findById(int i) throws SQLException {
+    public static Serie findById(int i) throws SQLException {
         Serie serie = null;
         Connection connect = DBConnection.getInstance().getConnection();
         String query = ("SELECT * FROM SERIE WHERE ID = ?");
@@ -99,6 +100,42 @@ public class Serie {
         stmt.executeUpdate(query);
     }
 
-    
+    public void delete() throws SQLException {
+        if (this.id != -1) {
+            Connection connect = DBConnection.getInstance().getConnection();
+            String query = ("DELETE FROM SERIE WHERE ID = ?");
+            PreparedStatement stmt = connect.prepareStatement(query);
+            stmt.setInt(1, this.id);
+            stmt.executeUpdate();
+            this.id = -1;
+        }
+    }
+
+    public void save() throws SQLException {
+        Connection connect = DBConnection.getInstance().getConnection();
+        if (this.id == -1) {
+            //saveNew
+            String query = ("SELECT COUNT(ID) FROM SERIE");
+            Statement stmt = connect.createStatement();
+            ResultSet resultset = stmt.executeQuery(query);
+            int idouille = resultset.getInt("ID");
+            query = ("INSERT INTO SERIE VALUES (?,?,?)");
+            PreparedStatement stmtmt = connect.prepareStatement(query);
+            stmtmt.setInt(1, idouille+1);
+            stmtmt.setString(2, this.nom);
+            stmtmt.setString(3, this.genre);
+            stmtmt.executeUpdate();
+            this.id = idouille+1;
+        }
+        else {
+            //update
+            String query = ("UPDATE SERIE SET NOM = ?, GENRE = ?, WHERE ID = ?");
+            PreparedStatement stmt = connect.prepareStatement(query);
+            stmt.setString(1, this.nom);
+            stmt.setString(2, this.genre);
+            stmt.setInt(3, this.id);
+            stmt.executeUpdate();
+        }
+    }
 
 }
