@@ -20,7 +20,7 @@ public class Serie {
         this.id = i;
     }
 
-    public ArrayList<Serie> findAll() throws SQLException {
+    public static ArrayList<Serie> findAll() throws SQLException {
         ArrayList series = new ArrayList<Serie>();
         Connection connect = DBConnection.getInstance().getConnection();
         String query = "SELECT * FROM SERIE";
@@ -43,14 +43,14 @@ public class Serie {
         stmt.setInt(1, i);
         ResultSet resultset = stmt.executeQuery();
         while (resultset.next()) {
-            new Serie(resultset.getString("nom"), resultset.getString("genre"));
+            serie = new Serie(resultset.getString("nom"), resultset.getString("genre"));
             int ID = resultset.getInt("ID");
             serie.setID(ID);
         }
         return serie;
     }
 
-    public ArrayList<Serie> findByName(String search) throws SQLException {
+    public static ArrayList<Serie> findByName(String search) throws SQLException {
         ArrayList series = new ArrayList<Serie>();
         Connection connect = DBConnection.getInstance().getConnection();
         String query = ("SELECT * FROM SERIE WHERE NOM LIKE ?");
@@ -66,7 +66,7 @@ public class Serie {
         return series;
     }
 
-    public ArrayList<Serie> findByGenre(String genre) throws SQLException {
+    public static ArrayList<Serie> findByGenre(String genre) throws SQLException {
         ArrayList series = new ArrayList<Serie>();
         Connection connect = DBConnection.getInstance().getConnection();
         String query = ("SELECT * FROM SERIES WHERE GENRE = ?");
@@ -118,7 +118,8 @@ public class Serie {
             String query = ("SELECT COUNT(ID) FROM SERIE");
             Statement stmt = connect.createStatement();
             ResultSet resultset = stmt.executeQuery(query);
-            int idouille = resultset.getInt("ID");
+            resultset.next();
+            int idouille = resultset.getInt(1);
             query = ("INSERT INTO SERIE VALUES (?,?,?)");
             PreparedStatement stmtmt = connect.prepareStatement(query);
             stmtmt.setInt(1, idouille+1);
@@ -129,13 +130,33 @@ public class Serie {
         }
         else {
             //update
-            String query = ("UPDATE SERIE SET NOM = ?, GENRE = ?, WHERE ID = ?");
+            String query = ("UPDATE SERIE SET NOM = ?, GENRE = ? WHERE ID = ?");
             PreparedStatement stmt = connect.prepareStatement(query);
             stmt.setString(1, this.nom);
             stmt.setString(2, this.genre);
             stmt.setInt(3, this.id);
             stmt.executeUpdate();
         }
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getNom() {
+        return this.nom;
+    }
+
+    public String getGenre() {
+        return this.nom;
+    }
+
+    public void setNom(String n) {
+        this.nom = n;
+    }
+
+    public void setGenre(String g) {
+        this.genre = g;
     }
 
 }

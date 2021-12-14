@@ -12,7 +12,7 @@ public class DBConnection {
     private String portNumber = "3306";
     private String tableName = "Serie";
     // iL faut une base nommee testSerie !
-    private String dbName = "testSerie";
+    private static String dbName = "testSerie";
     private Connection connect;
     private static DBConnection instance;
 
@@ -35,6 +35,11 @@ public class DBConnection {
 
     public Connection getConnection() {
         return this.connect;
+    }
+
+    public static void setNomDB(String nomDB) {
+        dbName = nomDB;
+        instance = null;
     }
 
 }
