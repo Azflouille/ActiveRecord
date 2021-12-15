@@ -2,6 +2,7 @@ package activeRecord;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Personnage {
 
@@ -117,12 +118,14 @@ public class Personnage {
         ArrayList persos = new ArrayList<Personnage>();
         ArrayList series = Serie.findByGenre(g);
         int compteur = series.size();
-        for (int j = 0; j > 0; j++) {
-            Serie s =(Serie) series.get(j);
+        while (compteur > 0) {
+            compteur--;
+            Serie s =(Serie) series.get(compteur);
             ArrayList<Personnage> tmp = Personnage.findBySerie(s);
             int compteur2 = tmp.size();
-            for (int k = 0; k > 0; k++) {
-                Personnage p = tmp.get(k);
+            while (compteur2 > 0) {
+                compteur2--;
+                Personnage p = tmp.get(compteur2);
                 persos.add(p);
             }
         }
@@ -131,6 +134,23 @@ public class Personnage {
 
     public int getId() {
         return this.id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Personnage that = (Personnage) o;
+        return id == that.id && id_serie == that.id_serie && Objects.equals(nom, that.nom);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nom, id_serie);
+    }
+
+    public void setID(int i) {
+        this.id = i;
     }
 
     public String getNom() {

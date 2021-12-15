@@ -20,6 +20,19 @@ public class Serie {
         this.id = i;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Serie serie = (Serie) o;
+        return id == serie.id && Objects.equals(nom, serie.nom) && Objects.equals(genre, serie.genre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nom, genre);
+    }
+
     public static ArrayList<Serie> findAll() throws SQLException {
         ArrayList series = new ArrayList<Serie>();
         Connection connect = DBConnection.getInstance().getConnection();
@@ -69,7 +82,7 @@ public class Serie {
     public static ArrayList<Serie> findByGenre(String genre) throws SQLException {
         ArrayList series = new ArrayList<Serie>();
         Connection connect = DBConnection.getInstance().getConnection();
-        String query = ("SELECT * FROM SERIES WHERE GENRE = ?");
+        String query = ("SELECT * FROM SERIE WHERE GENRE = ?");
         PreparedStatement stmt = connect.prepareStatement(query);
         stmt.setString(1, genre);
         ResultSet resultset = stmt.executeQuery();
